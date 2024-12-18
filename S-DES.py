@@ -47,6 +47,8 @@ def PermutacaoInicial(bloco):
         permuted_block.append(bloco[i - 1]) 
     
     result = ''.join(permuted_block)
+
+    print(f'Bloco pós IP: {result}')
     return result
 
 # (E/P)
@@ -121,7 +123,7 @@ def SwitchFunction(bits):
     return bits[4:] + bits[:4] 
 
 # Divisão das metades do bloco de dados + Função Fk
-def Fk(bits, subchave):
+def Fk(bits, subchave, rodada):
     left, right = bits[:4], bits[4:] 
     
     # E/P nos bits da direita
@@ -139,17 +141,20 @@ def Fk(bits, subchave):
     # XOR com os bits da esquerda
     fk_output = XOR(left, p4_output)
     
-    return fk_output + right
+    bloco = fk_output + right
+
+    print(f'Bloco pós rodada {rodada} de Feistel: {bloco}')
+    return bloco
 
 
 def RodadasFeistel(bloco, K1, K2):
     # Primeira rodada com K1
-    bloco_1 = Fk(bloco, K1)
+    bloco_1 = Fk(bloco, K1, 1)
     
     bloco_trocado = SwitchFunction(bloco_1)
     
     # Segunda rodada com K2
-    bloco_2 = Fk(bloco_trocado, K2)
+    bloco_2 = Fk(bloco_trocado, K2, 2)
     
     return bloco_2
 
@@ -182,12 +187,15 @@ def GerarSubchaves(chaveInicial):
 def Encrypt(chave10, bloco8):
     # 1. Geração de Chaves Subjacentes
     k1, k2 = GerarSubchaves(chave10)
+    print('.....')
 
     # 2. Permutação Inicial (IP): 
     ip = PermutacaoInicial(bloco8)
+    print('.....')
 
     # 3. Divisão em Metades + #4. Rodadas de Feistel: 
     bloco_feistel = RodadasFeistel(ip, k1, k2)
+    print('.....')
 
     # 5. Permutação Final (IP⁻¹):
     bloco_cifrado = PermutacaoFinal(bloco_feistel)
@@ -197,8 +205,10 @@ def Encrypt(chave10, bloco8):
 
 # Testando o algoritmo
 chave_10 = "1010000010"
-bloco_8 = "11010111"
+bloco_8 = "10010111"
 
+print(f'Execução do algoritmo com a chave inicial {chave_10} e com o bloco de dados {bloco_8}')
+print('.....')
 # Encriptação
 bloco_cifrado = Encrypt(chave_10, bloco_8)
 print("Bloco Cifrado:", bloco_cifrado)
