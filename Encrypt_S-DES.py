@@ -205,7 +205,7 @@ def Encrypt(chave10, bloco8):
 
 # Testando o algoritmo
 chave_10 = "1010000010"
-bloco_8 = "10010111"
+bloco_8 = "11010111"
 
 print(f'Execução do algoritmo com a chave inicial {chave_10} e com o bloco de dados {bloco_8}')
 print('.....')
